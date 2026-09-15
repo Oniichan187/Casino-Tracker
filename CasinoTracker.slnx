@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CasinoTracker.Tests/CasinoTracker.Tests.csproj" />
+  <Project Path="CasinoTracker/CasinoTracker.csproj" />
+</Solution>

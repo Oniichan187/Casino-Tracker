@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:CasinoTracker.ViewModels"
+             xmlns:items="clr-namespace:CasinoTracker.ViewModels.Items"
+             xmlns:controls="clr-namespace:CasinoTracker.Controls"
+             x:Class="CasinoTracker.Views.SessionDetailPage"
+             x:DataType="vm:SessionDetailViewModel"
+             Title="{Binding Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Rename" Command="{Binding RenameCommand}" Order="Secondary" />
+        <ToolbarItem Text="Delete" Command="{Binding DeleteCommand}" Order="Secondary" />
+    </ContentPage.ToolbarItems>
+
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="16" Spacing="16">
+
+                <!-- Header -->
+                <Border Style="{StaticResource Card}">
+                    <VerticalStackLayout Spacing="4">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding Name}" Style="{StaticResource PageTitle}" LineBreakMode="TailTruncation" />
+                            <Label Grid.Column="1" Text="RUNNING" Style="{StaticResource Badge}" IsVisible="{Binding IsRunning}" VerticalOptions="Center" />
+                        </Grid>
+                        <Label Text="{Binding CasinoName}" FontAttributes="Bold" />
+                        <Label Text="{Binding PeriodText}" Style="{StaticResource Caption}" />
+                        <Label Text="{Binding DurationText, StringFormat='Duration {0}'}" Style="{StaticResource Caption}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Summary tiles -->
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                    <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource Tile}">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Game result" Style="{StaticResource StatLabel}" />
+                            <Label Text="{Binding GameResultText}" Style="{StaticResource StatValue}"
+                                   TextColor="{Binding GameResult, Converter={StaticResource SignColor}}" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource Tile}">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Final bankroll" Style="{StaticResource StatLabel}" />
+                            <Label Text="{Binding FinalBankrollText}" Style="{StaticResource StatValue}" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource Tile}">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Buy-ins" Style="{StaticResource StatLabel}" />
+                            <Label Text="{Binding BuyInsText}" Style="{StaticResource StatValue}" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Tile}">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Cash-outs" Style="{StaticResource StatLabel}" />
+                            <Label Text="{Binding CashOutsText}" Style="{StaticResource StatValue}" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource Tile}">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Food &amp; drinks" Style="{StaticResource StatLabel}" />
+                            <Label Text="{Binding ConsumptionText}" Style="{StaticResource StatValue}" />
+                            <Label Text="{Binding ConsumedCountText}" Style="{StaticResource Caption}" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource Tile}">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Money / Chips" Style="{StaticResource StatLabel}" />
+                            <Label Text="{Binding FinalMoneyText}" Style="{StaticResource StatValue}" />
+                            <Label Text="{Binding FinalChipsText, StringFormat='Chips {0}'}" Style="{StaticResource Caption}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Bankroll chart -->
+                <Border Style="{StaticResource Card}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Bankroll over time" Style="{StaticResource SectionTitle}" />
+                        <controls:ChartView Series="{Binding BankrollSeries}" ValueFormat="N0" HeightRequest="240"
+                                            EmptyText="No exchanges or games recorded yet" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Exchanges -->
+                <Border Style="{StaticResource Card}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Exchanges" Style="{StaticResource SectionTitle}" />
+                        <controls:ChartView Series="{Binding ExchangeSeries}" ValueFormat="N0" HeightRequest="200"
+                                            EmptyText="No exchanges recorded" />
+                        <BoxView Style="{StaticResource Divider}" IsVisible="{Binding HasExchanges}" />
+                        <Label Text="Tap an entry to edit or delete it." Style="{StaticResource Caption}" IsVisible="{Binding HasExchanges}" />
+                        <VerticalStackLayout Spacing="2" BindableLayout.ItemsSource="{Binding Exchanges}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="items:ExchangeItem">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10" Padding="0,5">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SessionDetailViewModel}}, Path=ExchangeActionsCommand, x:DataType=vm:SessionDetailViewModel}"
+                                                                  CommandParameter="{Binding .}" />
+                                        </Grid.GestureRecognizers>
+                                        <Label Grid.Column="0" Text="{Binding TimeText}" Style="{StaticResource Caption}" VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text="{Binding Description}" VerticalOptions="Center" />
+                                        <Label Grid.Column="2" Text="{Binding AmountText}" FontAttributes="Bold" VerticalOptions="Center"
+                                               TextColor="{Binding Amount, Converter={StaticResource SignColor}}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Consumption -->
+                <Border Style="{StaticResource Card}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Food &amp; drinks over time" Style="{StaticResource SectionTitle}" />
+                        <controls:ChartView Series="{Binding ConsumptionSeries}" ValueFormat="N0" HeightRequest="220"
+                                            EmptyText="Nothing consumed in this session" />
+                        <controls:ChartView Bars="{Binding ConsumedBars}" ValueFormat="N0" HeightRequest="180"
+                                            IsVisible="{Binding HasConsumed}" />
+                        <BoxView Style="{StaticResource Divider}" IsVisible="{Binding HasConsumed}" />
+                        <Label Text="Tap an item to remove it." Style="{StaticResource Caption}" IsVisible="{Binding HasConsumed}" />
+                        <VerticalStackLayout Spacing="2" BindableLayout.ItemsSource="{Binding Consumed}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="items:ConsumedItem">
+                                    <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="10" Padding="0,5">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SessionDetailViewModel}}, Path=ConsumedActionsCommand, x:DataType=vm:SessionDetailViewModel}"
+                                                                  CommandParameter="{Binding .}" />
+                                        </Grid.GestureRecognizers>
+                                        <Label Grid.Column="0" Text="{Binding TimeText}" Style="{StaticResource Caption}" VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text="{Binding Icon}" VerticalOptions="Center" />
+                                        <Label Grid.Column="2" Text="{Binding Name}" VerticalOptions="Center" />
+                                        <Label Grid.Column="3" Text="{Binding PriceText}" Style="{StaticResource Caption}" VerticalOptions="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Games -->
+                <Border Style="{StaticResource Card}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Games played" Style="{StaticResource SectionTitle}" />
+                        <Label Text="No games played in this session." Style="{StaticResource Caption}"
+                               IsVisible="{Binding HasPlayedGames, Converter={StaticResource InvertedBool}}" />
+                        <Label Text="Tap a game to correct its result or delete it." Style="{StaticResource Caption}" IsVisible="{Binding HasPlayedGames}" />
+                        <VerticalStackLayout Spacing="2" BindableLayout.ItemsSource="{Binding PlayedGames}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="items:PlayedGameItem">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10" Padding="0,5">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SessionDetailViewModel}}, Path=PlayedGameActionsCommand, x:DataType=vm:SessionDetailViewModel}"
+                                                                  CommandParameter="{Binding .}" />
+                                        </Grid.GestureRecognizers>
+                                        <VerticalStackLayout Spacing="1">
+                                            <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                            <Label Text="{Binding TimeText}" Style="{StaticResource Caption}" />
+                                            <Label Text="{Binding DurationText}" Style="{StaticResource Caption}" />
+                                        </VerticalStackLayout>
+                                        <Label Grid.Column="1" Text="{Binding AmountText}" FontAttributes="Bold" VerticalOptions="Center"
+                                               TextColor="{Binding Amount, Converter={StaticResource SignColor}}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <BoxView HeightRequest="8" Color="Transparent" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+    </Grid>
+</ContentPage>

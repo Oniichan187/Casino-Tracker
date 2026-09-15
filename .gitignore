@@ -1,0 +1,109 @@
+# ---------------------------------------------------------------- .NET / MSBuild
+bin/
+obj/
+out/
+publish/
+*.binlog
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+BenchmarkDotNet.Artifacts/
+
+# ---------------------------------------------------------------- Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+coverage*.info
+
+# ---------------------------------------------------------------- Visual Studio
+.vs/
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+*.userprefs
+*.vspx
+*.sap
+*.psess
+*.vsp
+*.dbmdl
+*.dbproj.schemaview
+*.jfm
+*.pfx
+*.publishsettings
+*.pubxml
+*.pubxml.user
+*.rsuser
+*.ncrunch*
+_NCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+.builds
+*.pidb
+*.svclog
+*.scc
+*.log
+*.tlog
+FakesAssemblies/
+Generated\ Files/
+
+# ---------------------------------------------------------------- Rider / VS Code / other IDEs
+.idea/
+*.sln.iml
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.ionide/
+*.swp
+*.swo
+*~
+
+# ---------------------------------------------------------------- .NET MAUI / Android
+*.apk
+*.aab
+*.apks
+*.idsig
+*.dex
+*.ap_
+*.class
+*.keystore
+*.jks
+!debug.keystore
+local.properties
+.gradle/
+captures/
+Platforms/Android/Resources/values/*.xml.bak
+
+# Hot reload / XAML designer caches
+*.designer.cs.bak
+.mfractor/
+.mono/
+
+# ---------------------------------------------------------------- Machine specific build settings
+Directory.Build.local.props
+Directory.Build.local.targets
+*.local.json
+
+# ---------------------------------------------------------------- Emulator test artefacts
+tools/shots/
+*.png.tmp
+
+# ---------------------------------------------------------------- OS files
+.DS_Store
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ---------------------------------------------------------------- Packaging output
+*.zip
+*.7z
+*.tar.gz

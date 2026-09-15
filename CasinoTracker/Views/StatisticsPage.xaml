@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:CasinoTracker.ViewModels"
+             xmlns:items="clr-namespace:CasinoTracker.ViewModels.Items"
+             xmlns:controls="clr-namespace:CasinoTracker.Controls"
+             x:Class="CasinoTracker.Views.StatisticsPage"
+             x:DataType="vm:StatisticsViewModel"
+             Title="Statistics">
+
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="16" Spacing="16">
+
+                <!-- Empty state -->
+                <Border Style="{StaticResource Card}" IsVisible="{Binding IsEmpty}">
+                    <VerticalStackLayout Spacing="6" Padding="0,16">
+                        <Label Text="No statistics yet" Style="{StaticResource SectionTitle}" HorizontalTextAlignment="Center" />
+                        <Label Text="Play a few sessions and your numbers will show up here." Style="{StaticResource Caption}" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <VerticalStackLayout Spacing="16" IsVisible="{Binding HasData}">
+
+                    <!-- Overview tiles -->
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                        <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource Tile}">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Game result" Style="{StaticResource StatLabel}" />
+                                <Label Text="{Binding TotalResultText}" Style="{StaticResource StatValue}"
+                                       TextColor="{Binding TotalResult, Converter={StaticResource SignColor}}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource Tile}">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Incl. food &amp; drinks" Style="{StaticResource StatLabel}" />
+                                <Label Text="{Binding TotalBalanceText}" Style="{StaticResource StatValue}"
+                                       TextColor="{Binding TotalBalance, Converter={StaticResource SignColor}}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource Tile}">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Sessions" Style="{StaticResource StatLabel}" />
+                                <Label Text="{Binding TotalSessionsText}" Style="{StaticResource StatValue}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Tile}">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Time played" Style="{StaticResource StatLabel}" />
+                                <Label Text="{Binding TotalDurationText}" Style="{StaticResource StatValue}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource Tile}">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Per hour" Style="{StaticResource StatLabel}" />
+                                <Label Text="{Binding HourlyRateText}" Style="{StaticResource StatValue}"
+                                       TextColor="{Binding HourlyRate, Converter={StaticResource SignColor}}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource Tile}">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Winning sessions" Style="{StaticResource StatLabel}" />
+                                <Label Text="{Binding WinRateText}" Style="{StaticResource StatValue}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="3" Grid.Column="0" Style="{StaticResource Tile}">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Buy-ins" Style="{StaticResource StatLabel}" />
+                                <Label Text="{Binding TotalBuyInsText}" Style="{StaticResource StatValue}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource Tile}">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Cash-outs" Style="{StaticResource StatLabel}" />
+                                <Label Text="{Binding TotalCashOutsText}" Style="{StaticResource StatValue}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="4" Grid.Column="0" Style="{StaticResource Tile}">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Food &amp; drinks" Style="{StaticResource StatLabel}" />
+                                <Label Text="{Binding TotalConsumptionText}" Style="{StaticResource StatValue}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Row="4" Grid.Column="1" Style="{StaticResource Tile}">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Avg. session" Style="{StaticResource StatLabel}" />
+                                <Label Text="{Binding AverageDurationText}" Style="{StaticResource StatValue}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <Label Text="Time played, average, longest session, per hour and winning sessions count finished sessions only."
+                           Style="{StaticResource Caption}" Margin="4,0" />
+
+                    <!-- Result over time -->
+                    <Border Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Result over time" Style="{StaticResource SectionTitle}" />
+                            <Label Text="Cumulative game result after each session." Style="{StaticResource Caption}" />
+                            <controls:ChartView Series="{Binding RevenueSeries}" ValueFormat="N0" HeightRequest="240" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Result per month" Style="{StaticResource SectionTitle}" />
+                            <Label Text="Up to 12 months, ending with your most recent session. Months without a visit show 0."
+                                   Style="{StaticResource Caption}" />
+                            <controls:ChartView Bars="{Binding MonthlyBars}" ValueFormat="N0" HeightRequest="200" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Per casino -->
+                    <Border Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="Per casino" Style="{StaticResource SectionTitle}" />
+
+                            <Label Text="Game result" Style="{StaticResource FieldLabel}" />
+                            <controls:ChartView Bars="{Binding ResultPerCasino}" ValueFormat="N0" HeightRequest="190" />
+
+                            <Label Text="Spent on food &amp; drinks" Style="{StaticResource FieldLabel}" />
+                            <controls:ChartView Bars="{Binding ConsumptionPerCasino}" ValueFormat="N0" HeightRequest="190" />
+
+                            <Label Text="Money exchanged into chips" Style="{StaticResource FieldLabel}" />
+                            <controls:ChartView Bars="{Binding BuyInsPerCasino}" ValueFormat="N0" HeightRequest="190" />
+
+                            <BoxView Style="{StaticResource Divider}" />
+
+                            <VerticalStackLayout Spacing="12" BindableLayout.ItemsSource="{Binding Casinos}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="items:CasinoStatItem">
+                                        <Border Style="{StaticResource Tile}">
+                                            <VerticalStackLayout Spacing="6">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="15" />
+                                                    <Label Grid.Column="1" Text="{Binding GameResultText}" FontAttributes="Bold"
+                                                           TextColor="{Binding GameResult, Converter={StaticResource SignColor}}" />
+                                                </Grid>
+                                                <Label Style="{StaticResource Caption}">
+                                                    <Label.FormattedText>
+                                                        <FormattedString>
+                                                            <Span Text="{Binding SessionsText}" />
+                                                            <Span Text=" · " />
+                                                            <Span Text="{Binding DurationText}" />
+                                                        </FormattedString>
+                                                    </Label.FormattedText>
+                                                </Label>
+                                                <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" RowSpacing="0">
+                                                    <Label Grid.Row="0" Grid.Column="0" Text="Buy-ins" Style="{StaticResource Caption}" />
+                                                    <Label Grid.Row="1" Grid.Column="0" Text="{Binding BuyInsText}" FontAttributes="Bold" />
+                                                    <Label Grid.Row="0" Grid.Column="1" Text="Cash-outs" Style="{StaticResource Caption}" />
+                                                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding CashOutsText}" FontAttributes="Bold" />
+                                                    <Label Grid.Row="0" Grid.Column="2" Text="Food &amp; drinks" Style="{StaticResource Caption}" />
+                                                    <Label Grid.Row="1" Grid.Column="2" Text="{Binding ConsumptionText}" FontAttributes="Bold" />
+                                                </Grid>
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <Label Text="Balance incl. food &amp; drinks" Style="{StaticResource Caption}" VerticalOptions="Center" />
+                                                    <Label Grid.Column="1" Text="{Binding BalanceText}" FontAttributes="Bold"
+                                                           TextColor="{Binding Balance, Converter={StaticResource SignColor}}" />
+                                                </Grid>
+                                                <VerticalStackLayout Spacing="3" IsVisible="{Binding HasItems}" Margin="0,4,0,0"
+                                                                     BindableLayout.ItemsSource="{Binding Items}">
+                                                    <BindableLayout.ItemTemplate>
+                                                        <DataTemplate x:DataType="items:ItemStatRow">
+                                                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                                                                <Label Grid.Column="0" Text="{Binding Icon}" />
+                                                                <Label Grid.Column="1" Text="{Binding Text}" />
+                                                                <Label Grid.Column="2" Text="{Binding SpendText}" Style="{StaticResource Caption}" />
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </BindableLayout.ItemTemplate>
+                                                </VerticalStackLayout>
+                                            </VerticalStackLayout>
+                                        </Border>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Per game -->
+                    <Border Style="{StaticResource Card}" IsVisible="{Binding HasGames}">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="Per game" Style="{StaticResource SectionTitle}" />
+                            <controls:ChartView Bars="{Binding ResultPerGame}" ValueFormat="N0" HeightRequest="190" />
+                            <BoxView Style="{StaticResource Divider}" />
+                            <VerticalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding Games}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="items:GameStatItem">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                            <VerticalStackLayout Spacing="1">
+                                                <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                                <Label Style="{StaticResource Caption}">
+                                                    <Label.FormattedText>
+                                                        <FormattedString>
+                                                            <Span Text="{Binding TimesText}" />
+                                                            <Span Text=" · " />
+                                                            <Span Text="{Binding DurationText}" />
+                                                        </FormattedString>
+                                                    </Label.FormattedText>
+                                                </Label>
+                                            </VerticalStackLayout>
+                                            <Label Grid.Column="1" Text="{Binding ResultText}" FontAttributes="Bold" VerticalOptions="Center"
+                                                   TextColor="{Binding Result, Converter={StaticResource SignColor}}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Food & drinks -->
+                    <Border Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Most consumed" Style="{StaticResource SectionTitle}" />
+                            <controls:ChartView Bars="{Binding TopItems}" ValueFormat="N0" HeightRequest="190"
+                                                EmptyText="Nothing consumed yet" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Highlights -->
+                    <Border Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="Highlights" Style="{StaticResource SectionTitle}" />
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Best session" Style="{StaticResource FieldLabel}" />
+                                <Label Text="{Binding BestSessionText}" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Worst session" Style="{StaticResource FieldLabel}" />
+                                <Label Text="{Binding WorstSessionText}" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Favourite casino" Style="{StaticResource FieldLabel}" />
+                                <Label Text="{Binding FavoriteCasinoText}" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Most played game" Style="{StaticResource FieldLabel}" />
+                                <Label Text="{Binding MostPlayedGameText}" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Most consumed item" Style="{StaticResource FieldLabel}" />
+                                <Label Text="{Binding MostConsumedText}" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Longest session" Style="{StaticResource FieldLabel}" />
+                                <Label Text="{Binding LongestSessionText}" />
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                </VerticalStackLayout>
+
+                <BoxView HeightRequest="8" Color="Transparent" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+    </Grid>
+</ContentPage>

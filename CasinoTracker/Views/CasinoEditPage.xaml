@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:CasinoTracker.ViewModels"
+             xmlns:items="clr-namespace:CasinoTracker.ViewModels.Items"
+             x:Class="CasinoTracker.Views.CasinoEditPage"
+             x:DataType="vm:CasinoEditViewModel"
+             Title="{Binding Title}">
+
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="16" Spacing="16">
+
+                <!-- Basics -->
+                <Border Style="{StaticResource Card}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Casino" Style="{StaticResource SectionTitle}" />
+
+                        <Label Text="Name *" Style="{StaticResource FieldLabel}" />
+                        <Border Style="{StaticResource InputBorder}">
+                            <Entry Text="{Binding Name}" Placeholder="e.g. Grand Casino" ReturnType="Next" />
+                        </Border>
+
+                        <Label Text="Address (optional)" Style="{StaticResource FieldLabel}" />
+                        <Border Style="{StaticResource InputBorder}">
+                            <Entry Text="{Binding Address}" Placeholder="Street, City" ReturnType="Next" />
+                        </Border>
+
+                        <Label Text="Coordinates (optional)" Style="{StaticResource FieldLabel}" />
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Border Grid.Column="0" Style="{StaticResource InputBorder}">
+                                <Entry Text="{Binding LatitudeText}" Placeholder="Latitude" Keyboard="Numeric" />
+                            </Border>
+                            <Border Grid.Column="1" Style="{StaticResource InputBorder}">
+                                <Entry Text="{Binding LongitudeText}" Placeholder="Longitude" Keyboard="Numeric" />
+                            </Border>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Button Text="Use current location" Command="{Binding UseCurrentLocationCommand}"
+                                    Style="{StaticResource SecondaryButton}" IsEnabled="{Binding IsLocating, Converter={StaticResource InvertedBool}}" />
+                            <ActivityIndicator Grid.Column="1" IsRunning="{Binding IsLocating}" IsVisible="{Binding IsLocating}" Margin="10,0,0,0" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Games -->
+                <Border Style="{StaticResource Card}">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Available games" Style="{StaticResource SectionTitle}" />
+                        <Label Text="Select the games that can be played at this casino." Style="{StaticResource Caption}" />
+                        <Label Text="No games created yet. Add games in the settings first." Style="{StaticResource Caption}"
+                               IsVisible="{Binding HasGameOptions, Converter={StaticResource InvertedBool}}" Margin="0,6,0,0" />
+                        <VerticalStackLayout Spacing="0" BindableLayout.ItemsSource="{Binding GameOptions}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="items:SelectableItem">
+                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6" Padding="0,2">
+                                        <CheckBox IsChecked="{Binding IsSelected}" VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text="{Binding Name}" VerticalOptions="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Menu -->
+                <Border Style="{StaticResource Card}">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Menu &amp; prices" Style="{StaticResource SectionTitle}" />
+                        <Label Text="Select the food and drinks available here and enter their price." Style="{StaticResource Caption}" />
+                        <Label Text="No menu items created yet. Add menu items in the settings first." Style="{StaticResource Caption}"
+                               IsVisible="{Binding HasMenuOptions, Converter={StaticResource InvertedBool}}" Margin="0,6,0,0" />
+                        <VerticalStackLayout Spacing="0" BindableLayout.ItemsSource="{Binding MenuOptions}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="items:SelectableItem">
+                                    <Grid ColumnDefinitions="Auto,*,110" ColumnSpacing="6" Padding="0,2">
+                                        <CheckBox IsChecked="{Binding IsSelected}" VerticalOptions="Center" />
+                                        <VerticalStackLayout Grid.Column="1" Spacing="0" VerticalOptions="Center">
+                                            <Label Text="{Binding Name}" />
+                                            <Label Text="{Binding Subtitle}" Style="{StaticResource Caption}" IsVisible="{Binding HasSubtitle}" />
+                                        </VerticalStackLayout>
+                                        <Border Grid.Column="2" Style="{StaticResource InputBorder}">
+                                            <Entry Text="{Binding PriceText}" Placeholder="Price" Keyboard="Numeric"
+                                                   IsEnabled="{Binding IsSelected}" HorizontalTextAlignment="End" />
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Actions -->
+                <Button Text="Save" Command="{Binding SaveCommand}" />
+                <Button Text="Delete casino" Command="{Binding DeleteCommand}" Style="{StaticResource DangerButton}"
+                        IsVisible="{Binding IsNew, Converter={StaticResource InvertedBool}}" />
+
+                <BoxView HeightRequest="16" Color="Transparent" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+    </Grid>
+</ContentPage>

@@ -1,0 +1,11 @@
+<Project>
+  <!--
+    Machine-local Android tooling. These are only applied when the folders exist and
+    nothing else (environment / command line) already set the properties, so the
+    project still builds on machines with a differently located SDK.
+  -->
+  <PropertyGroup>
+    <AndroidSdkDirectory Condition="'$(AndroidSdkDirectory)' == '' and Exists('C:\Android\android-sdk')">C:\Android\android-sdk</AndroidSdkDirectory>
+    <JavaSdkDirectory Condition="'$(JavaSdkDirectory)' == '' and Exists('C:\Android\jdk')">C:\Android\jdk</JavaSdkDirectory>
+  </PropertyGroup>
+</Project>

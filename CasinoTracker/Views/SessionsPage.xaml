@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:CasinoTracker.ViewModels"
+             xmlns:items="clr-namespace:CasinoTracker.ViewModels.Items"
+             x:Class="CasinoTracker.Views.SessionsPage"
+             x:DataType="vm:SessionsViewModel"
+             Title="Sessions">
+
+    <Grid>
+        <CollectionView ItemsSource="{Binding Sessions}"
+                        SelectionMode="None"
+                        Margin="16,12,16,0">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.Header>
+                <Label Text="{Binding SummaryText}" Style="{StaticResource Caption}" Margin="4,0,0,8" />
+            </CollectionView.Header>
+
+            <CollectionView.Footer>
+                <BoxView HeightRequest="24" Color="Transparent" />
+            </CollectionView.Footer>
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="24,48" Spacing="8">
+                    <Label Text="No sessions yet" Style="{StaticResource SectionTitle}" HorizontalTextAlignment="Center" />
+                    <Label Text="Start your first session on the Session tab." Style="{StaticResource Caption}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="items:SessionListItem">
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Delete"
+                                           BackgroundColor="{StaticResource Danger}"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SessionsViewModel}}, Path=DeleteCommand, x:DataType=vm:SessionsViewModel}"
+                                           CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+
+                        <Border Style="{StaticResource Card}" Padding="14">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SessionsViewModel}}, Path=OpenCommand, x:DataType=vm:SessionsViewModel}"
+                                    CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="2" ColumnSpacing="10">
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" FontAttributes="Bold" FontSize="16" LineBreakMode="TailTruncation" />
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding ResultText}" FontAttributes="Bold" FontSize="16"
+                                       TextColor="{Binding Result, Converter={StaticResource SignColor}}" />
+
+                                <Label Grid.Row="1" Grid.Column="0" Text="{Binding CasinoName}" Style="{StaticResource Caption}" />
+                                <Label Grid.Row="1" Grid.Column="1" Text="RUNNING" Style="{StaticResource Badge}"
+                                       IsVisible="{Binding IsRunning}" HorizontalTextAlignment="End" />
+
+                                <Label Grid.Row="2" Grid.Column="0" Text="{Binding DateText}" Style="{StaticResource Caption}" />
+                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding DurationText}" Style="{StaticResource Caption}" HorizontalTextAlignment="End" />
+
+                                <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding DetailsText}" Style="{StaticResource Caption}" Margin="0,4,0,0" />
+                            </Grid>
+                        </Border>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+    </Grid>
+</ContentPage>

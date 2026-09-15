@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Brand -->
+    <Color x:Key="Primary">#2E7D32</Color>
+    <Color x:Key="PrimaryDark">#1B5E20</Color>
+    <Color x:Key="PrimaryLight">#A5D6A7</Color>
+    <Color x:Key="Accent">#F9A825</Color>
+    <Color x:Key="AccentDark">#C17900</Color>
+    <Color x:Key="Danger">#D32F2F</Color>
+    <Color x:Key="Info">#1976D2</Color>
+    <Color x:Key="White">#FFFFFF</Color>
+    <Color x:Key="Black">#000000</Color>
+
+    <!-- Surfaces -->
+    <Color x:Key="PageLight">#F3F5F3</Color>
+    <Color x:Key="PageDark">#0F1411</Color>
+    <Color x:Key="CardLight">#FFFFFF</Color>
+    <Color x:Key="CardDark">#1B221D</Color>
+    <Color x:Key="CardAltLight">#EEF3EE</Color>
+    <Color x:Key="CardAltDark">#242D27</Color>
+    <Color x:Key="BorderLight">#DDE3DD</Color>
+    <Color x:Key="BorderDark">#2E3830</Color>
+    <Color x:Key="BankrollBarLight">#1B5E20</Color>
+    <Color x:Key="BankrollBarDark">#16261A</Color>
+
+    <!-- Text -->
+    <Color x:Key="TextLight">#1A1F1B</Color>
+    <Color x:Key="TextDark">#EDF0ED</Color>
+    <Color x:Key="MutedLight">#6A716B</Color>
+    <Color x:Key="MutedDark">#A3ABA4</Color>
+
+    <!-- Charts -->
+    <Color x:Key="GridLight">#E3E8E3</Color>
+    <Color x:Key="GridDark">#2A332C</Color>
+
+</ResourceDictionary>

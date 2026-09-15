@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:CasinoTracker.ViewModels"
+             xmlns:models="clr-namespace:CasinoTracker.Models"
+             xmlns:items="clr-namespace:CasinoTracker.ViewModels.Items"
+             x:Class="CasinoTracker.Views.MainPage"
+             x:DataType="vm:MainViewModel"
+             Title="Casino Tracker">
+
+    <Grid>
+
+        <!-- ================================================== No active session -->
+        <ScrollView IsVisible="{Binding HasActiveSession, Converter={StaticResource InvertedBool}}">
+            <VerticalStackLayout Padding="16" Spacing="16">
+
+                <Border Style="{StaticResource Card}">
+                    <VerticalStackLayout Spacing="14">
+                        <Label Text="Start a new session" Style="{StaticResource SectionTitle}" />
+
+                        <VerticalStackLayout Spacing="10"
+                                             IsVisible="{Binding HasCasinos, Converter={StaticResource InvertedBool}}">
+                            <Label Style="{StaticResource Caption}"
+                                   Text="You have not added a casino yet. Create one in the settings first – including the games and menu items available there." />
+                            <Button Text="Open settings"
+                                    Command="{Binding GoToSettingsCommand}"
+                                    Style="{StaticResource SecondaryButton}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="10" IsVisible="{Binding HasCasinos}">
+                            <Label Text="Casino" Style="{StaticResource FieldLabel}" />
+                            <Border Style="{StaticResource InputBorder}">
+                                <Picker ItemsSource="{Binding Casinos}"
+                                        SelectedItem="{Binding SelectedCasino}"
+                                        ItemDisplayBinding="{Binding Name, x:DataType=models:Casino}"
+                                        Title="Select casino" />
+                            </Border>
+
+                            <Label Text="Session name (optional)" Style="{StaticResource FieldLabel}" />
+                            <Border Style="{StaticResource InputBorder}">
+                                <Entry Text="{Binding NewSessionName}" Placeholder="e.g. Friday night" ReturnType="Done" />
+                            </Border>
+
+                            <Button Text="Start session" Command="{Binding StartSessionCommand}" Margin="0,6,0,0" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Label Style="{StaticResource Caption}" HorizontalTextAlignment="Center"
+                       Text="Sessions are stopped automatically after the time configured in the settings." />
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ================================================== Active session -->
+        <Grid RowDefinitions="Auto,*" IsVisible="{Binding HasActiveSession}">
+
+            <!-- Bankroll bar -->
+            <Border Grid.Row="0" Style="{StaticResource BankrollBar}">
+                <Grid ColumnDefinitions="*,*,*" Padding="12,10">
+                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                        <Label Text="BR · Bankroll" Style="{StaticResource BankrollLabel}" />
+                        <Label Text="{Binding BankrollText}" Style="{StaticResource BankrollValue}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" Spacing="2">
+                        <Label Text="MO · Money" Style="{StaticResource BankrollLabel}" />
+                        <Label Text="{Binding MoneyText}" Style="{StaticResource BankrollValue}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="2" Spacing="2">
+                        <Label Text="CH · Chips" Style="{StaticResource BankrollLabel}" />
+                        <Label Text="{Binding ChipsText}" Style="{StaticResource BankrollValue}" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Padding="16" Spacing="16">
+
+                    <!-- Session info -->
+                    <Border Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Session name" Style="{StaticResource FieldLabel}" />
+                            <Border Style="{StaticResource InputBorder}">
+                                <Entry Text="{Binding SessionName}" Placeholder="Session name"
+                                       FontSize="17" FontAttributes="Bold" ReturnType="Done" />
+                            </Border>
+                            <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="{Binding CasinoName}" FontAttributes="Bold" />
+                                    <Label Text="{Binding SessionStartText, StringFormat='Started {0}'}" Style="{StaticResource Caption}" />
+                                    <Label Text="{Binding AutoStopText}" Style="{StaticResource Caption}" />
+                                </VerticalStackLayout>
+                                <Label Grid.Column="1" Text="{Binding ElapsedText}"
+                                       FontSize="22" FontAttributes="Bold" VerticalOptions="Center" />
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Exchange -->
+                    <Border Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="Exchange" Style="{StaticResource SectionTitle}" />
+                            <Border Style="{StaticResource InputBorder}">
+                                <Entry Text="{Binding ExchangeAmountText}" Keyboard="Numeric" Placeholder="Amount" ReturnType="Done" />
+                            </Border>
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                <Button Grid.Column="0" Text="Money → Chips" Command="{Binding BuyInCommand}" />
+                                <Button Grid.Column="1" Text="Chips → Money" Command="{Binding CashOutCommand}"
+                                        Style="{StaticResource AccentButton}" />
+                            </Grid>
+
+                            <Label Text="Tap an entry to edit or delete it." Style="{StaticResource Caption}"
+                                   IsVisible="{Binding Exchanges.Count, Converter={StaticResource CountToBool}}" />
+                            <VerticalStackLayout Spacing="2"
+                                                 BindableLayout.ItemsSource="{Binding Exchanges}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="items:ExchangeItem">
+                                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10" Padding="0,5">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=ExchangeActionsCommand, x:DataType=vm:MainViewModel}"
+                                                                      CommandParameter="{Binding .}" />
+                                            </Grid.GestureRecognizers>
+                                            <Label Grid.Column="0" Text="{Binding TimeText}" Style="{StaticResource Caption}" VerticalOptions="Center" />
+                                            <Label Grid.Column="1" Text="{Binding Description}" VerticalOptions="Center" />
+                                            <Label Grid.Column="2" Text="{Binding AmountText}" FontAttributes="Bold"
+                                                   TextColor="{Binding Amount, Converter={StaticResource SignColor}}" VerticalOptions="Center" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                                <BindableLayout.EmptyView>
+                                    <Label Text="No exchanges yet. Buy chips to get started." Style="{StaticResource Caption}" />
+                                </BindableLayout.EmptyView>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Game -->
+                    <Border Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="Game" Style="{StaticResource SectionTitle}" />
+
+                            <!-- not playing -->
+                            <VerticalStackLayout Spacing="10"
+                                                 IsVisible="{Binding IsPlaying, Converter={StaticResource InvertedBool}}">
+                                <Label Text="No games are configured for this casino. Add them in the settings."
+                                       Style="{StaticResource Caption}"
+                                       IsVisible="{Binding HasGames, Converter={StaticResource InvertedBool}}" />
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10" IsVisible="{Binding HasGames}">
+                                    <Border Grid.Column="0" Style="{StaticResource InputBorder}">
+                                        <Picker ItemsSource="{Binding Games}"
+                                                SelectedItem="{Binding SelectedGame}"
+                                                ItemDisplayBinding="{Binding Name, x:DataType=models:Game}"
+                                                Title="Select game" />
+                                    </Border>
+                                    <Button Grid.Column="1" Text="▶ Start" Command="{Binding StartGameCommand}" />
+                                </Grid>
+                            </VerticalStackLayout>
+
+                            <!-- playing -->
+                            <VerticalStackLayout Spacing="10" IsVisible="{Binding IsPlaying}">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label Text="Now playing" Style="{StaticResource FieldLabel}" />
+                                        <Label Text="{Binding CurrentGameName}" FontSize="18" FontAttributes="Bold" />
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="1" Text="{Binding GameElapsedText}" FontSize="18" FontAttributes="Bold" VerticalOptions="Center" />
+                                </Grid>
+
+                                <Button Text="■ Stop" Command="{Binding RequestStopGameCommand}"
+                                        Style="{StaticResource DangerButton}"
+                                        IsVisible="{Binding IsStopPanelVisible, Converter={StaticResource InvertedBool}}" />
+
+                                <VerticalStackLayout Spacing="8" IsVisible="{Binding IsStopPanelVisible}"
+                                                     RadioButtonGroup.GroupName="stopMode"
+                                                     RadioButtonGroup.SelectedValue="{Binding StopMode}">
+                                    <Label Text="How do you want to enter the result?" Style="{StaticResource FieldLabel}" />
+                                    <FlexLayout Wrap="Wrap" JustifyContent="Start" AlignItems="Center">
+                                        <RadioButton Content="Lost" Value="lost" IsChecked="True" />
+                                        <RadioButton Content="Won" Value="won" />
+                                        <RadioButton Content="Chips left" Value="left" />
+                                    </FlexLayout>
+                                    <Border Style="{StaticResource InputBorder}">
+                                        <Entry Text="{Binding StopAmountText}" Keyboard="Numeric"
+                                               Placeholder="{Binding StopAmountPlaceholder}" ReturnType="Done" />
+                                    </Border>
+                                    <Label Text="{Binding StopHintText}" Style="{StaticResource Caption}" />
+                                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                        <Button Grid.Column="0" Text="Cancel" Command="{Binding CancelStopGameCommand}"
+                                                Style="{StaticResource SecondaryButton}" />
+                                        <Button Grid.Column="1" Text="Save result" Command="{Binding ConfirmStopGameCommand}" />
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+
+                            <!-- played games in this session -->
+                            <Label Text="Tap a game to correct its result or delete it." Style="{StaticResource Caption}"
+                                   IsVisible="{Binding PlayedGames.Count, Converter={StaticResource CountToBool}}" />
+                            <VerticalStackLayout Spacing="2"
+                                                 BindableLayout.ItemsSource="{Binding PlayedGames}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="items:PlayedGameItem">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10" Padding="0,5">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=PlayedGameActionsCommand, x:DataType=vm:MainViewModel}"
+                                                                      CommandParameter="{Binding .}" />
+                                            </Grid.GestureRecognizers>
+                                            <VerticalStackLayout Spacing="1">
+                                                <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                                <Label Text="{Binding TimeText}" Style="{StaticResource Caption}" />
+                                            </VerticalStackLayout>
+                                            <Label Grid.Column="1" Text="{Binding AmountText}" FontAttributes="Bold" VerticalOptions="Center"
+                                                   TextColor="{Binding Amount, Converter={StaticResource SignColor}}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Food & drinks -->
+                    <Border Style="{StaticResource Card}">
+                        <VerticalStackLayout Spacing="10">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Food &amp; drinks" Style="{StaticResource SectionTitle}" />
+                                <Label Grid.Column="1" Text="{Binding ConsumptionTotalText}" Style="{StaticResource Caption}" VerticalOptions="Center" />
+                            </Grid>
+
+                            <Label Text="No menu items are configured for this casino. Add them in the settings."
+                                   Style="{StaticResource Caption}"
+                                   IsVisible="{Binding HasMenu, Converter={StaticResource InvertedBool}}" />
+
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10" IsVisible="{Binding HasMenu}">
+                                <Border Grid.Column="0" Style="{StaticResource InputBorder}">
+                                    <Picker ItemsSource="{Binding Menu}"
+                                            SelectedItem="{Binding SelectedMenuEntry}"
+                                            ItemDisplayBinding="{Binding DisplayName, x:DataType=models:MenuEntry}"
+                                            Title="Select item" />
+                                </Border>
+                                <Button Grid.Column="1" Text="+ Add" Command="{Binding AddConsumedCommand}" />
+                            </Grid>
+
+                            <VerticalStackLayout Spacing="8" Margin="0,6,0,0"
+                                                 BindableLayout.ItemsSource="{Binding Consumed}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="items:ConsumedGroup">
+                                        <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="8">
+                                            <Label Grid.Column="0" Text="{Binding Icon}" FontSize="20" VerticalOptions="Center" />
+                                            <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                                                <Label Text="{Binding Text}" FontAttributes="Bold" />
+                                                <Label Text="{Binding PriceText}" Style="{StaticResource Caption}" />
+                                            </VerticalStackLayout>
+                                            <Button Grid.Column="2" Text="−" Style="{StaticResource SmallButton}"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=DecrementConsumedCommand, x:DataType=vm:MainViewModel}"
+                                                    CommandParameter="{Binding .}" />
+                                            <Label Grid.Column="3" Text="{Binding Count}" FontAttributes="Bold" FontSize="16"
+                                                   VerticalOptions="Center" HorizontalTextAlignment="Center" WidthRequest="24" />
+                                            <Button Grid.Column="4" Text="+" Style="{StaticResource SmallButton}"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=IncrementConsumedCommand, x:DataType=vm:MainViewModel}"
+                                                    CommandParameter="{Binding .}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                                <BindableLayout.EmptyView>
+                                    <Label Text="Nothing consumed yet." Style="{StaticResource Caption}" />
+                                </BindableLayout.EmptyView>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- End session -->
+                    <Button Text="End session" Command="{Binding EndSessionCommand}"
+                            Style="{StaticResource DangerButton}" Margin="0,4,0,24" />
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+    </Grid>
+</ContentPage>

@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>CasinoTracker.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <!--
+    The app project only targets net10.0-android, so the platform independent parts
+    (models, helpers, data services) are linked into this plain .NET test project.
+  -->
+  <ItemGroup>
+    <Compile Include="..\CasinoTracker\Models\*.cs" Link="App\Models\%(Filename)%(Extension)" />
+    <Compile Include="..\CasinoTracker\Helpers\*.cs" Link="App\Helpers\%(Filename)%(Extension)" />
+    <Compile Include="..\CasinoTracker\Services\IDatabaseService.cs" Link="App\Services\IDatabaseService.cs" />
+    <Compile Include="..\CasinoTracker\Services\ICasinoService.cs" Link="App\Services\ICasinoService.cs" />
+    <Compile Include="..\CasinoTracker\Services\CasinoService.cs" Link="App\Services\CasinoService.cs" />
+    <Compile Include="..\CasinoTracker\Services\IMenuitemService.cs" Link="App\Services\IMenuitemService.cs" />
+    <Compile Include="..\CasinoTracker\Services\MenuitemService.cs" Link="App\Services\MenuitemService.cs" />
+    <Compile Include="..\CasinoTracker\Services\IGameService.cs" Link="App\Services\IGameService.cs" />
+    <Compile Include="..\CasinoTracker\Services\GameService.cs" Link="App\Services\GameService.cs" />
+    <Compile Include="..\CasinoTracker\Services\ISessionService.cs" Link="App\Services\ISessionService.cs" />
+    <Compile Include="..\CasinoTracker\Services\SessionService.cs" Link="App\Services\SessionService.cs" />
+    <Compile Include="..\CasinoTracker\Services\IStatisticsService.cs" Link="App\Services\IStatisticsService.cs" />
+    <Compile Include="..\CasinoTracker\Services\StatisticsService.cs" Link="App\Services\StatisticsService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.11.285" />
+    <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
+  </ItemGroup>
+
+</Project>

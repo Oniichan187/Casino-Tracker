@@ -18,7 +18,7 @@ public sealed class SettingsService : ISettingsService
 
     public bool IsDarkMode
     {
-        get => _preferences.Get(DarkModeKey, false);
+        get => _preferences.Get(DarkModeKey, true);
         set
         {
             _preferences.Set(DarkModeKey, value);

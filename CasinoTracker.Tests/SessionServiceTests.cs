@@ -78,7 +78,7 @@ public class SessionServiceTests : IAsyncLifetime
         var afterRebuy = await _sessions.GetBankrollAsync(session.Id);
         Assert.Equal(200m, afterRebuy.Chips);
         Assert.Equal(0m, afterRebuy.Money);
-        Assert.Equal(200m, afterRebuy.Bankroll);
+        Assert.Equal(150m, afterRebuy.Bankroll); // 100 + the 50 that MO could not cover
     }
 
     [Fact]

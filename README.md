@@ -3,6 +3,50 @@
 A .NET MAUI (Android) app to track casino sessions: buy-ins and cash-outs, games played
 and their results, food & drinks consumed, plus statistics across all sessions.
 
+<p align="center">
+  <img src="docs/screenshots/07-session-running.png" width="24%" alt="Running session with bankroll, exchanges and game" />
+  <img src="docs/screenshots/13-session-detail-1.png" width="24%" alt="Session detail with bankroll chart" />
+  <img src="docs/screenshots/14-statistics-1.png" width="24%" alt="Statistics overview" />
+  <img src="docs/screenshots/15-light-statistics.png" width="24%" alt="Statistics in light mode" />
+</p>
+
+## Screenshots
+
+All images were taken on the Android 14 emulator (Pixel 6 profile) with the Release build. Dark mode is the
+default; the last row shows the light theme.
+
+### Session
+
+| Start a session | Running session | Games & food | Entering a game result |
+| :---: | :---: | :---: | :---: |
+| ![Start session](docs/screenshots/06-session-start.png) | ![Running session](docs/screenshots/07-session-running.png) | ![Games and food](docs/screenshots/09-session-games-food.png) | ![Game result](docs/screenshots/10-game-result.png) |
+
+The header always shows **BR · Bankroll**, **MO · Money** and **CH · Chips**. Every exchange, game result
+and consumed item can be tapped to correct or delete it. Ending a session asks for confirmation and shows the
+final numbers:
+
+| End session | Sessions list | Session detail | Exchanges & consumption |
+| :---: | :---: | :---: | :---: |
+| ![End session](docs/screenshots/11-end-session-confirm.png) | ![Sessions](docs/screenshots/12-sessions-list.png) | ![Detail](docs/screenshots/13-session-detail-1.png) | ![Detail charts](docs/screenshots/13-session-detail-2.png) |
+
+### Statistics
+
+| Totals & result over time | Per month & per casino | Casino spending | Per game & consumption | Highlights |
+| :---: | :---: | :---: | :---: | :---: |
+| ![Statistics 1](docs/screenshots/14-statistics-1.png) | ![Statistics 2](docs/screenshots/14-statistics-2.png) | ![Statistics 3](docs/screenshots/14-statistics-3.png) | ![Statistics 4](docs/screenshots/14-statistics-4.png) | ![Statistics 5](docs/screenshots/14-statistics-5.png) |
+
+### Settings & catalog
+
+| Settings | Casinos, menu items, games | Edit casino | New menu item |
+| :---: | :---: | :---: | :---: |
+| ![Settings](docs/screenshots/02-settings.png) | ![Catalog](docs/screenshots/02b-settings-catalog.png) | ![Edit casino](docs/screenshots/05-casino-edit.png) | ![New menu item](docs/screenshots/04-new-menuitem.png) |
+
+### Light theme
+
+| Settings | Sessions | Session detail | Statistics |
+| :---: | :---: | :---: | :---: |
+| ![Light settings](docs/screenshots/15-light-settings.png) | ![Light sessions](docs/screenshots/15-light-sessions.png) | ![Light detail](docs/screenshots/15-light-detail.png) | ![Light statistics](docs/screenshots/15-light-statistics.png) |
+
 ## Tech stack
 
 | Area | Choice |
@@ -64,7 +108,8 @@ menu items and games that are referenced by sessions cannot be deleted).
 * **CH (chips)** = Σ exchange amounts + Σ game results.
 * **MO (money)** = everything cashed out. A later buy-in is subtracted from MO first; if the buy-in
   is larger than MO, MO becomes 0 and CH still increases by the full amount.
-* **BR (bankroll)** = MO + CH.
+* **BR (bankroll)** = everything that came out of the wallet, i.e. the part of each buy-in that MO could
+  not cover. Cash-outs and game results never change BR, so `MO + CH − BR` is the session result.
 
 ## Features
 
@@ -152,7 +197,8 @@ with the confirmation dialog. Two issues found only at runtime were fixed: Andro
 silently dropped the decimal separator of the other locale ("6,50" became 650 on an English device), and
 a detail page left open across a dark-mode toggle kept its old sign colours.
 
-`tools/Ui-Helpers.ps1` contains the adb/uiautomator helpers used for that walkthrough.
+`tools/Ui-Helpers.ps1` contains the adb/uiautomator helpers used for that walkthrough and for the screenshots
+in `docs/screenshots/` (taken with `Shot`, downscaled to 540×1200).
 
 ## Tests
 

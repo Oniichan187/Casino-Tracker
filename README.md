@@ -1,7 +1,4 @@
-# Casino Tracker
-
-A .NET MAUI (Android) app to track casino sessions: buy-ins and cash-outs, games played
-and their results, food & drinks consumed, plus statistics across all sessions.
+<h1 align="center">Casino Tracker</h1>
 
 <p align="center">
   <img src="docs/screenshots/07-session-running.png" width="24%" alt="Running session with bankroll, exchanges and game" />
@@ -9,6 +6,16 @@ and their results, food & drinks consumed, plus statistics across all sessions.
   <img src="docs/screenshots/14-statistics-1.png" width="24%" alt="Statistics overview" />
   <img src="docs/screenshots/15-light-statistics.png" width="24%" alt="Statistics in light mode" />
 </p>
+
+<p align="center">
+  <img alt=".NET 10" src="https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white" />
+  <img alt=".NET MAUI" src="https://img.shields.io/badge/.NET_MAUI-Android-3DDC84?logo=android&logoColor=white" />
+  <img alt="SQLite" src="https://img.shields.io/badge/SQLite-sqlite--net--pcl-003B57?logo=sqlite&logoColor=white" />
+  <img alt="Tests" src="https://img.shields.io/badge/tests-xUnit-5E8E3E" />
+</p>
+
+A .NET MAUI (Android) app to track casino sessions: buy-ins and cash-outs, games played
+and their results, food & drinks consumed, plus statistics across all sessions.
 
 ## Screenshots
 

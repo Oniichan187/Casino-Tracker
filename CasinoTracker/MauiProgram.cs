@@ -23,7 +23,12 @@ public static class MauiProgram
     {
         services.AddSingleton(Preferences.Default);
 
-        services.AddSingleton<IDatabaseService, DatabaseService>();
+        services.AddSingleton<IDatabaseService>(_ =>
+            new DatabaseService(Path.Combine(FileSystem.AppDataDirectory, DatabaseService.FileName)));
+        services.AddSingleton<IBackupService, BackupService>();
+#if ANDROID
+        services.AddSingleton<IFileTransferService, FileTransferService>();
+#endif
         services.AddSingleton<ISettingsService, SettingsService>();
         services.AddSingleton<IDialogService, DialogService>();
         services.AddSingleton<INavigationService, NavigationService>();

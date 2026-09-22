@@ -82,6 +82,24 @@
                 </VerticalStackLayout>
             </Border>
 
+            <!-- Backup -->
+            <Border Style="{StaticResource Card}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Backup" Style="{StaticResource SectionTitle}" />
+                    <Label Text="Save all sessions, casinos, menu items and games to a file, or restore them from one. Importing replaces the current data. App settings are not included."
+                           Style="{StaticResource Caption}" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Text="Export to file" Command="{Binding ExportDatabaseCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBool}}" />
+                        <Button Grid.Column="1" Text="Import from file" Command="{Binding ImportDatabaseCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBool}}" />
+                    </Grid>
+                    <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </Border>
+
             <!-- Casinos -->
             <Border Style="{StaticResource Card}">
                 <VerticalStackLayout Spacing="6">

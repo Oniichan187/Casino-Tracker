@@ -31,6 +31,16 @@ public class MainActivity : MauiAppCompatActivity
         base.OnDestroy();
     }
 
+    // Result of the "save as" dialog opened by FileTransferService. base must stay first: MAUI's own
+    // FilePicker (used for imports) is completed through it.
+#pragma warning disable CS0672, CA1422 // OnActivityResult is deprecated since API 30 but is the hook MAUI itself uses
+    protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent? data)
+    {
+        base.OnActivityResult(requestCode, resultCode, data);
+        CasinoTracker.Services.FileTransferService.HandleActivityResult(requestCode, resultCode, data);
+    }
+#pragma warning restore CS0672, CA1422
+
     private void OnThemeChanged(object? sender, AppThemeChangedEventArgs e) => ApplySystemBars();
 
     /// <summary>
